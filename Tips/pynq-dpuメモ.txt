@@ -1,0 +1,44 @@
+pynq-dpuメモ
+
+・機材
+　　・KR260
+　　・webcam
+　　・LEDボード
+
+
+・プラットフォームの作成
+　1.kira用のubuntu22.04の起動SDを作成する。　https://ubuntu.com/download/amd#kria-k26
+　2.pynqをセットアップする。　　　　　　　 　https://github.com/Xilinx/Kria-PYNQ
+　3.DPU-PYNQ (v2.5)をセットアップする。　　　https://github.com/Xilinx/DPU-PYNQ
+
+・WebCamが、/dev/video0と認識されることを確認。
+・ジュピターノートブックが起動する事を確認。
+・DPU-PYNQのサンプルで動作することを確認。
+
+・yolox_nanoを動かす為のPythonのモジュールをjupyter noteboook上のterminalでセットアップする。https://docs.ultralytics.com/ja/quickstart/
+
+・Usbメモリーのdpu-zynq.zipをpynq-dpuにコピーする
+　　もしくは、pynq-dpu       に　dpu_pt_yolox-nano_camGPIO.ipynb , yolox_nano_pt.xmodel
+　　　　　　　pynq-dpu/mydpu に　dpu2.bit dpu2.hwh dpu2.xclbin
+　　をコピーする。
+
+
+・dpu_pt_yolox-nano_camGPIO.ipynb　動作を確認しつつRUNでステップ実行する。
+
+・動かない時
+　pythonでモジュール不足のエラーとなる場合。　pip_list.txtを参考に足りないモジュールをインストールする。
+　requirements.txtで一括インストールする。　$pip install -r requirements.txt
+
+
+
+
+・SDを使用する場合
+
+  Serial terminalで接続しログイン
+　　user: ubuntu
+  　Pass: sld1234sld (suも一緒）
+　
+　ログイン後、ifconfigでIPアドレスを確認
+　確認したIPアドレスにWebブラウザーで接続 http://<IPアドレス>>
+　jupyter notebookにパスワードを求められた場合、「xilinx」
+ 
