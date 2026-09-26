@@ -1,0 +1,589 @@
+動く環境
+
+ubuntu@kria:~$ xbutil --verbose examine
+Verbose: Enabling Verbosity
+Verbose: SubCommand: examine
+System Configuration
+  OS Name              : Linux
+  Release              : 5.15.0-1060-xilinx-zynqmp
+  Version              : #64-Ubuntu SMP Fri Oct 24 02:34:51 UTC 2025
+  Machine              : aarch64
+  CPU Cores            : 4
+  Memory               : 3910 MB
+  Distribution         : Ubuntu 22.04.5 LTS
+  GLIBC                : 2.35
+  Model                : ZynqMP KR260 revB
+
+XRT
+  Version              : 2.13.0
+  Branch               :
+  Hash                 :
+  Hash Date            : 2022-09-15 17:01:20
+  ZOCL                 : 2.13.0,
+
+Devices present
+BDF             :  Shell  Platform UUID  Device ID     Device Ready*
+[0000:00:00.0]  :  KR260  0x0            user(inst=0)  Yes
+
+* Devices that are not ready will have reduced functionality when using XRT tools
+
+
+ubuntu@kria:~$ env | egrep "XILINX|XLNX|VART|XRT|PATH|LD_LIBRARY_PATH"
+ls -l /usr/lib/dpu* /opt/xilinx/ /lib/firmware 2>/dev/null
+
+XILINX_XRT=/usr
+PATH=/usr/local/share/pynq-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/share/pynq-venv/bin/microblazeel-xilinx-elf/bin/
+
+-rw-r--r-- 1 root root 7837985 Apr 28  2025 /usr/lib/dpu.xclbin
+-rw-r--r-- 1 root root 7837985 Jan  8 07:14 /usr/lib/dpu2.xclbin
+-rw-r--r-- 1 root root 7837996 May  9  2025 /usr/lib/dpu2024.xclbin
+-rw-r--r-- 1 root root 7850770 Apr 17  2025 /usr/lib/dpu3.xclbin
+
+/lib/firmware:
+total 61400
+drwxr-xr-x 3 root root    4096 Mar  4  2024 5.15.0-1027-xilinx-zynqmp
+drwxr-xr-x 3 root root    4096 May  2  2025 5.15.0-1046-xilinx-zynqmp
+drwxr-xr-x 3 root root    4096 Dec  1 01:49 5.15.0-1060-xilinx-zynqmp
+-rw-r--r-- 1 root root 7797692 Apr 17  2025 DPU2.bin
+drwxr-xr-x 2 root root    4096 Dec  1 01:13 aic8800DC
+-rwxr-xr-x 1 root root   41144 Oct  5  2021 al5d.fw
+-rwxr-xr-x 1 root root   13656 Oct  5  2021 al5d_b.fw
+-rwxr-xr-x 1 root root  140848 Oct  5  2021 al5e.fw
+-rwxr-xr-x 1 root root   17312 Oct  5  2021 al5e_b.fw
+-rwxr-xr-x 1 root root   73200 Jan 25  2024 ap1302_ar0144_single_fw.bin
+-rwxr-xr-x 1 root root   79324 Jan 25  2024 ap1302_ar1335_single_fw.bin
+-rw-r--r-- 1 root root 7797692 Sep 16 04:23 design_1_wrapper.bin
+-rw-r--r-- 1 root root 7797692 Apr 30  2025 dpu.bin
+-rw-r--r-- 1 root root 7797692 Jan  8 07:14 dpu2.bin
+-rw-r--r-- 1 root root 7797692 May  9  2025 dpu2024.bin
+-rw-r--r-- 1 root root 7797692 Apr 17  2025 dpu3.bin
+drwxr-xr-x 2 root root    4096 Mar 20  2023 hp
+-rw-r--r-- 1 root root     526 Jan  8 07:28 k26_starter_kits.dtbo
+-rw-r--r-- 1 root root 7797692 Jun  2  2025 kr260_iic_gpio.bin
+-rw-r--r-- 1 root root    5980 Jan 14  2025 regulatory.db
+-rw-r--r-- 1 root root    1085 Jan 14  2025 regulatory.db.p7s
+-rw-r--r-- 1 root root   67152 Sep 15  2021 skl_hda_dsp_generic-tplg.bin
+-rw-r--r-- 1 root root 7797692 Jun 17  2025 vcu.bin
+drwxr-xr-x 3 root root    4096 Mar  4  2024 xilinx
+
+ubuntu@kria:~$ modinfo zocl | egrep "version|srcversion|vermagic"
+version:        2.13.479
+srcversion:     4971DA73FC4D315FA5B838E
+vermagic:       5.15.0-1060-xilinx-zynqmp SMP mod_unload modversions aarch64
+ubuntu@kria:~$
+
+
+ubuntu@kria:~$ ldd $(which python3) 2>/dev/null | head
+        linux-vdso.so.1 (0x0000ffffb4e72000)
+        libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffffb47b0000)
+        libexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffffb4770000)
+        libz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffffb4740000)
+        libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffb4590000)
+        /lib/ld-linux-aarch64.so.1 (0x0000ffffb4e39000)
+
+ubuntu@kria:~$ ldd $(which xbutil) | egrep "libxrt|xrt_core|xilinx"
+        not a dynamic executable
+
+ubuntu@kria:~$ pynq -v
+PYNQ version: 3.0.1
+Path: /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq
+Git Id: 16022d5f2c61c7e5e1d4aabcfc9b3e4c91b491b6
+
+
+ubuntu@kria:~$ # 1) 実体の確認
+which python3
+which xrt xbutil
+xrt --version
+
+# 2) カーネル/ドライバ/起動条件
+uname -a
+cat /proc/cmdline
+lsmod | egrep "zocl|xocl"
+
+# 3) メモリ（CMA）
+grep -E "CmaTotal|CmaFree" /proc/meminfo
+
+# 4) 直近ログ
+dmesg | egrep -i "zocl|xrt|dma|timeout|cma|iommu|smmu" | tail -200
+
+# 5) 重要な環境変数
+env | egrep "XILINX|XLNX|VART|XRT|LD_LIBRARY_PATH|PATH"
+/usr/local/share/pynq-venv/bin/python3
+/usr/bin/xbutil
+Command 'xrt' not found, did you mean:
+  command 'art' from deb artemis (18.1.0+dfsg-6)
+  command 'srt' from deb python3-pysrt (1.0.1-2)
+  command 'rt' from deb rt4-clients (4.4.4+dfsg-2ubuntu1.22.04.1)
+  command 'rt' from deb rt5-clients (5.0.1+dfsg-1ubuntu1)
+  command 'prt' from deb prt (0.22-1)
+Try: sudo apt install <deb name>
+Linux kria 5.15.0-1060-xilinx-zynqmp #64-Ubuntu SMP Fri Oct 24 02:34:51 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+ root=LABEL=writable rootwait earlycon console=ttyPS1,115200 console=tty1 clk_ignore_unused uio_pdrv_genirq.of_id=generic-uio xilinx_tsn_ep.st_pcp=4 cma=1000M
+zocl                  204800  0
+CmaTotal:        1024000 kB
+CmaFree:         1018844 kB
+dmesg: read kernel buffer failed: Operation not permitted
+XILINX_XRT=/usr
+PATH=/usr/local/share/pynq-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/share/pynq-venv/bin/microblazeel-xilinx-elf/bin/
+
+
+ubuntu@kria:~$ pip list
+Package                           Version
+--------------------------------- ----------------
+alabaster                         0.7.12
+anyio                             3.6.1
+apturl                            0.5.2
+argon2-cffi                       21.3.0
+argon2-cffi-bindings              21.2.0
+asttokens                         2.0.5
+async-generator                   1.10
+attrs                             21.2.0
+Automat                           20.2.0
+Babel                             2.8.0
+backcall                          0.2.0
+bcrypt                            3.2.0
+beautifulsoup4                    4.13.3
+bleach                            5.0.1
+blinker                           1.4
+Brlapi                            0.8.3
+Brotli                            1.1.0
+certifi                           2020.6.20
+cffi                              1.15.0
+chardet                           4.0.0
+click                             8.0.3
+cloud-init                        25.2
+colorama                          0.4.4
+command-not-found                 0.3
+configobj                         5.0.6
+constantly                        15.1.0
+contourpy                         1.3.1
+CppHeaderParser                   2.7.4
+cryptography                      3.4.8
+cupshelpers                       1.0
+cycler                            0.12.1
+Cython                            0.29.32
+dash                              2.6.0
+dash-bootstrap-components         1.2.1
+dash-core-components              2.0.0
+dash-html-components              2.0.0
+dash-renderer                     1.9.1
+dash-table                        5.0.0
+dbus-python                       1.2.18
+debugpy                           1.6.2
+decorator                         5.2.1
+deepdiff                          5.8.1
+defer                             1.0.6
+defusedxml                        0.7.1
+deltasigma                        0.2.2
+Deprecated                        1.2.18
+distro                            1.7.0
+distro-info                       1.1+ubuntu0.2
+docutils                          0.17.1
+entrypoints                       0.4
+exceptiongroup                    1.2.2
+executing                         0.9.1
+fastjsonschema                    2.16.1
+filelock                          3.18.0
+Flask                             2.1.3
+Flask-Compress                    1.12
+fonttools                         4.56.0
+fsspec                            2025.3.2
+gTTS                              2.2.4
+httplib2                          0.20.2
+hyperlink                         21.0.0
+idna                              3.3
+imagesize                         1.4.1
+importlib-metadata                4.6.4
+imutils                           0.5.4
+incremental                       21.3.0
+iniconfig                         2.1.0
+ipykernel                         6.15.1
+ipython                           8.4.0
+ipython-genutils                  0.2.0
+ipywidgets                        7.7.1
+itsdangerous                      2.1.2
+jedi                              0.18.1
+jeepney                           0.7.1
+Jinja2                            3.0.3
+joblib                            1.4.2
+json5                             0.9.8
+jsonpatch                         1.32
+jsonpointer                       2.0
+jsonschema                        4.9.0
+jupyter                           1.0.0
+jupyter-client                    7.3.4
+jupyter-console                   6.4.4
+jupyter-contrib-core              0.4.0
+jupyter-contrib-nbextensions      0.5.1
+jupyter-core                      4.11.1
+jupyter-highlight-selected-word   0.2.0
+jupyter-latex-envs                1.4.6
+jupyter-nbextensions-configurator 0.5.0
+jupyter-server                    1.18.1
+jupyterlab                        3.4.4
+jupyterlab-pygments               0.2.2
+jupyterlab-server                 2.15.0
+jupyterlab-widgets                1.1.1
+jupyterplot                       0.0.3
+keyring                           23.5.0
+kiwisolver                        1.4.8
+language-selector                 0.1
+launchpadlib                      1.10.16
+lazr.restfulclient                0.14.4
+lazr.uri                          1.0.6
+louis                             3.20.0
+lrcurve                           1.1.0
+lxml                              5.3.1
+macaroonbakery                    1.3.1
+MarkupSafe                        2.1.1
+matplotlib                        3.10.1
+matplotlib-inline                 0.1.3
+mistune                           0.8.4
+mnist                             0.2.2
+more-itertools                    8.10.0
+mpmath                            1.3.0
+nbclassic                         0.4.3
+nbclient                          0.5.13
+nbconvert                         6.5.0
+nbformat                          5.4.0
+nbsphinx                          0.8.9
+nbwavedrom                        1.0.1
+nest-asyncio                      1.5.5
+netifaces                         0.11.0
+networkx                          3.4.2
+notebook                          6.4.12
+notebook-shim                     0.1.0
+numpy                             1.26.4
+oauthlib                          3.2.0
+olefile                           0.46
+opencv-python                     4.11.0.86
+ordered-set                       4.1.0
+packaging                         21.3
+pandas                            2.2.3
+pandocfilters                     1.5.0
+parsec                            3.13
+parso                             0.8.3
+patsy                             0.5.2
+pbr                               5.9.0
+pexpect                           4.8.0
+pickleshare                       0.7.5
+Pillow                            9.0.1
+pip                               22.0.2
+plotly                            5.9.0
+pluggy                            1.5.0
+ply                               3.11
+prometheus-client                 0.14.1
+prompt-toolkit                    3.0.30
+protobuf                          3.12.4
+psutil                            7.0.0
+ptyprocess                        0.7.0
+pure-eval                         0.2.2
+py-cpuinfo                        9.0.0
+pyasn1                            0.4.8
+pyasn1-modules                    0.2.1
+PyAudio                           0.2.12
+pybind11                          2.10.0
+pycairo                           1.21.0
+pycparser                         2.19
+pycups                            2.0.1
+pycurl                            7.45.1
+pydantic                          1.9.1
+pyeda                             0.28.0
+Pygments                          2.19.1
+PyGObject                         3.42.1
+PyHamcrest                        2.0.2
+PyJWT                             2.3.0
+pymacaroons                       0.13.0
+PyNaCl                            1.5.0
+pynq                              3.0.1
+pynq-dpu                          2.5
+pynq-helloworld                   3.0.0
+pynqmetadata                      0.1.2
+pynqutils                         0.1.1
+pyOpenSSL                         21.0.0
+pyparsing                         2.4.7
+pyRFC3339                         1.1
+pyrsistent                        0.18.1
+pyserial                          3.5
+pytest                            8.3.5
+python-apt                        2.4.0+ubuntu4
+python-dateutil                   2.8.2
+python-debian                     0.1.43+ubuntu1.1
+python-magic                      0.4.27
+python-periphery                  2.3.0
+pytz                              2022.1
+pyxdg                             0.27
+PyYAML                            5.4.1
+pyzmq                             23.2.0
+qtconsole                         5.3.1
+QtPy                              2.1.0
+reportlab                         3.6.8
+requests                          2.25.1
+rise                              5.7.1
+roman                             3.3
+scikit-learn                      1.6.1
+scipy                             1.15.2
+seaborn                           0.13.2
+SecretStorage                     3.3.1
+Send2Trash                        1.8.0
+service-identity                  18.1.0
+setproctitle                      1.3.0
+setuptools                        59.6.0
+simple-term-menu                  1.5.0
+simplegeneric                     0.8.1
+six                               1.16.0
+sniffio                           1.2.0
+snowballstemmer                   2.2.0
+sos                               4.9.2
+soupsieve                         2.6
+SpeechRecognition                 3.8.1
+Sphinx                            5.1.1
+sphinx-rtd-theme                  1.0.0
+sphinxcontrib-applehelp           1.0.2
+sphinxcontrib-devhelp             1.0.2
+sphinxcontrib-htmlhelp            2.0.0
+sphinxcontrib-jsmath              1.0.1
+sphinxcontrib-qthelp              1.0.3
+sphinxcontrib-serializinghtml     1.1.5
+ssh-import-id                     5.11
+stack-data                        0.3.0
+sympy                             1.13.1
+systemd-python                    234
+tenacity                          8.0.1
+terminado                         0.15.0
+testpath                          0.6.0
+testresources                     2.0.1
+threadpoolctl                     3.6.0
+tinycss2                          1.1.1
+tomli                             2.2.1
+torch                             2.6.0
+torchvision                       0.21.0
+tornado                           6.4.2
+tqdm                              4.64.0
+traitlets                         5.3.0
+Twisted                           22.1.0
+typing_extensions                 4.13.2
+tzdata                            2025.2
+ubuntu-drivers-common             0.0.0
+ubuntu-pro-client                 8001
+ufw                               0.36.1
+ultralytics                       8.3.100
+ultralytics-thop                  2.0.14
+unattended-upgrades               0.1
+urllib3                           1.26.5
+voila                             0.3.6
+voila-gridstack                   0.3.0
+wadllib                           1.3.6
+wcwidth                           0.2.5
+webencodings                      0.5.1
+websocket-client                  1.3.3
+websockets                        10.3
+Werkzeug                          2.2.1
+wheel                             0.37.1
+widgetsnbextension                3.6.1
+wrapt                             1.17.2
+wurlitzer                         3.0.2
+xdg                               5
+xkit                              0.0.0
+zipp                              1.0.0
+zope.interface                    5.4.0
+
+
+
+
+
+
+ubuntu@kria:~$ uname -a
+sudo modinfo zocl | egrep "filename|vermagic|version|srcversion"
+sudo dmesg | egrep -i "zocl|xrt|dma|timeout|iommu|smmu|fpga|xilinx" | tail -200
+dpkg -l | egrep "xrt|zocl|xilinx|vitis|vart|xir"
+Linux kria 5.15.0-1060-xilinx-zynqmp #64-Ubuntu SMP Fri Oct 24 02:34:51 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+[sudo] password for ubuntu:
+filename:       /lib/modules/5.15.0-1060-xilinx-zynqmp/kernel/drivers/gpu/drm/zocl/zocl.ko
+version:        2.13.479
+srcversion:     4971DA73FC4D315FA5B838E
+vermagic:       5.15.0-1060-xilinx-zynqmp SMP mod_unload modversions aarch64
+[    0.000000] Linux version 5.15.0-1060-xilinx-zynqmp (buildd@bos03-arm64-100) (gcc (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0, GNU ld (GNU Binutils for Ubuntu) 2.38) #64-Ubuntu SMP Fri Oct 24 02:34:51 UTC 2025 (Ubuntu 5.15.0-1060.64-xilinx-zynqmp 5.15.189)
+[    0.000000]   DMA      [mem 0x0000000000000000-0x00000000ffffffff]
+[    0.000000]   DMA32    empty
+[    0.000000] Kernel command line:  root=LABEL=writable rootwait earlycon console=ttyPS1,115200 console=tty1 clk_ignore_unused uio_pdrv_genirq.of_id=generic-uio xilinx_tsn_ep.st_pcp=4 cma=1000M
+[    0.079848] DMA: preallocated 512 KiB GFP_KERNEL pool for atomic allocations
+[    0.080027] DMA: preallocated 512 KiB GFP_KERNEL|GFP_DMA pool for atomic allocations
+[    0.080290] DMA: preallocated 512 KiB GFP_KERNEL|GFP_DMA32 pool for atomic allocations
+[    1.199705] iommu: Default domain type: Translated
+[    1.199717] iommu: DMA domain TLB invalidation policy: strict mode
+[    1.202497] FPGA manager framework
+[    2.098979] fpga_manager fpga0: Xilinx ZynqMP FPGA Manager registered
+[    4.853153] of-fpga-region fpga-full: FPGA Region probed
+[    4.859755] xilinx-zynqmp-dma fd500000.dma-controller: ZynqMP DMA driver Probe success
+[    4.867938] xilinx-zynqmp-dma fd510000.dma-controller: ZynqMP DMA driver Probe success
+[    4.876101] xilinx-zynqmp-dma fd520000.dma-controller: ZynqMP DMA driver Probe success
+[    4.884270] xilinx-zynqmp-dma fd530000.dma-controller: ZynqMP DMA driver Probe success
+[    4.892430] xilinx-zynqmp-dma fd540000.dma-controller: ZynqMP DMA driver Probe success
+[    4.900606] xilinx-zynqmp-dma fd550000.dma-controller: ZynqMP DMA driver Probe success
+[    4.908765] xilinx-zynqmp-dma fd560000.dma-controller: ZynqMP DMA driver Probe success
+[    4.916934] xilinx-zynqmp-dma fd570000.dma-controller: ZynqMP DMA driver Probe success
+[    4.925142] xilinx-zynqmp-dma ffa80000.dma-controller: ZynqMP DMA driver Probe success
+[    4.933325] xilinx-zynqmp-dma ffa90000.dma-controller: ZynqMP DMA driver Probe success
+[    4.941478] xilinx-zynqmp-dma ffaa0000.dma-controller: ZynqMP DMA driver Probe success
+[    4.949647] xilinx-zynqmp-dma ffab0000.dma-controller: ZynqMP DMA driver Probe success
+[    4.957819] xilinx-zynqmp-dma ffac0000.dma-controller: ZynqMP DMA driver Probe success
+[    4.965991] xilinx-zynqmp-dma ffad0000.dma-controller: ZynqMP DMA driver Probe success
+[    4.974159] xilinx-zynqmp-dma ffae0000.dma-controller: ZynqMP DMA driver Probe success
+[    4.982323] xilinx-zynqmp-dma ffaf0000.dma-controller: ZynqMP DMA driver Probe success
+[    4.990908] xilinx-zynqmp-dpdma fd4c0000.dma-controller: Xilinx DPDMA engine is probed
+[    5.081265] xilinx-axipmon ffa00000.perf-monitor: Probed Xilinx APM
+[    5.087947] xilinx-axipmon fd0b0000.perf-monitor: Probed Xilinx APM
+[    5.094514] xilinx-axipmon fd490000.perf-monitor: Probed Xilinx APM
+[    5.101114] xilinx-axipmon ffa10000.perf-monitor: Probed Xilinx APM
+[    5.109554] cdns-wdt fd4d0000.watchdog: Xilinx Watchdog Timer with timeout 60s
+[    5.117106] cdns-wdt ff150000.watchdog: Xilinx Watchdog Timer with timeout 10s
+[    6.442418] xilinx-dp-snd-codec fd4a0000.display:zynqmp-dp-snd-codec0: Xilinx DisplayPort Sound Codec probed
+[    6.454504] xilinx-dp-snd-pcm zynqmp_dp_snd_pcm0: Xilinx DisplayPort Sound PCM probed
+[    6.465932] xilinx-dp-snd-pcm zynqmp_dp_snd_pcm1: Xilinx DisplayPort Sound PCM probed
+[    6.586380] xilinx-dp-snd-card fd4a0000.display:zynqmp-dp-snd-card: Xilinx DisplayPort Sound Card probed
+[    7.010676] usb usb1: Manufacturer: Linux 5.15.0-1060-xilinx-zynqmp xhci-hcd
+[    7.061649] usb usb2: Manufacturer: Linux 5.15.0-1060-xilinx-zynqmp xhci-hcd
+[    7.175519] usb usb3: Manufacturer: Linux 5.15.0-1060-xilinx-zynqmp xhci-hcd
+[    7.222831] usb usb4: Manufacturer: Linux 5.15.0-1060-xilinx-zynqmp xhci-hcd
+[   18.354800] dmaproxy: module is from the staging directory, the quality is unknown, you have been warned.
+[   44.691449] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-full/firmware-name
+[   44.701665] OF: overlay: WARNING: memory leak will occur if overlay removed, property: /fpga-full/resets
+[   77.464305] [drm] Probing for xlnx,zocl
+[   77.464338] zocl-drm axi:zyxclmm_drm: IRQ index 0 not found
+[   77.470187] [drm] FPGA programming device pcap founded.
+[   77.471881] [drm] Initialized zocl 2.13.479 00021153 for axi:zyxclmm_drm on minor 1
+[   77.575809] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(1045), ret: 0
+[   77.602591] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(1045)
+[   96.653389] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2192), ret: 0
+[   96.653477] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2192)
+[   96.653690] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2192), ret: 0
+[   98.959382] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2192)
+ii  libdrm-xlnx-amdgpu1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to amdgpu-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-common                         2.4.110-1xilinx1                        all          Userspace interface to kernel DRM services -- common files
+ii  libdrm-xlnx-dev:arm64                      2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- development files
+ii  libdrm-xlnx-etnaviv1:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to etnaviv-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-freedreno1:arm64               2.4.110-1xilinx1                        arm64        Userspace interface to msm/kgsl kernel DRM services -- runtime
+ii  libdrm-xlnx-nouveau2:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to nouveau-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-radeon1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to radeon-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-tegra0:arm64                   2.4.110-1xilinx1                        arm64        Userspace interface to tegra-specific kernel DRM services -- runtime
+ii  libdrm2-xlnx:arm64                         2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- runtime
+ii  libvart                                    2.5.0                                   arm64        Vitis Ai RuntTime
+ii  libxilinx-vcu-dev                          2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - development files
+ii  libxilinx-vcu-omx-dev                      2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - development files
+ii  libxilinx-vcu-omx1                         2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - runtime libraries
+ii  libxilinx-vcu0                             2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - runtime libraries
+ii  libxir                                     2.5.0                                   arm64        Xilinx Intermediate Representation for deep learning algorithms
+ii  linux-firmware-xilinx-ap1302               1:2.0-0ubuntu1~22.04.1                  all          Firmware for the AP1302 ISP, for Xilinx boards
+ii  linux-firmware-xilinx-vcu                  2022.1-0ubuntu0xlnx1                    all          Xilinx VCU firmware files
+ii  linux-headers-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-5.15.0-1046-xilinx-zynqmp    5.15.0-1046.50                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-5.15.0-1060-xilinx-zynqmp    5.15.0-1060.64                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-xilinx-zynqmp                5.15.0.1060.63                          arm64        Linux kernel headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-image-5.15.0-1027-xilinx-zynqmp      5.15.0-1027.31                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+rc  linux-image-5.15.0-1044-xilinx-zynqmp      5.15.0-1044.48                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-5.15.0-1046-xilinx-zynqmp      5.15.0-1046.50                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-5.15.0-1060-xilinx-zynqmp      5.15.0-1060.64                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-xilinx-zynqmp                  5.15.0.1060.63                          arm64        Linux kernel image for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-modules-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+rc  linux-modules-5.15.0-1044-xilinx-zynqmp    5.15.0-1044.48                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-modules-5.15.0-1046-xilinx-zynqmp    5.15.0-1046.50                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-modules-5.15.0-1060-xilinx-zynqmp    5.15.0-1060.64                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-xilinx-zynqmp                        5.15.0.1060.63                          arm64        Complete Linux kernel and headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-xilinx-zynqmp-headers-5.15.0-1027    5.15.0-1027.31                          all          Header files related to Linux kernel version 5.15.0
+ii  linux-xilinx-zynqmp-headers-5.15.0-1046    5.15.0-1046.50                          all          Header files related to Linux kernel version 5.15.0
+ii  linux-xilinx-zynqmp-headers-5.15.0-1060    5.15.0-1060.64                          all          Header files related to Linux kernel version 5.15.0
+ii  xilinx-vcu-ctrl                            2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - command-line utilities
+ii  xilinx-vcu-omx-utils                       2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - command-line utilities
+ii  xrt                                        2.13.479-0ubuntu2                       arm64        Xilinx Runtime (XRT) - runtime libraries
+ubuntu@kria:~$
+
+
+ubuntu@kria:~$ ls -l /dev/dri
+id
+groups
+sudo cat /sys/kernel/debug/dri/0/name 2>/dev/null
+sudo cat /sys/kernel/debug/dri/1/name 2>/dev/null
+sudo xbutil examine 2>/dev/null || true
+env | egrep "XLNX_VART_FIRMWARE|XILINX|VART|XRT|LD_LIBRARY_PATH"
+total 0
+drwxr-xr-x  2 root root        100 Jan  8 08:23 by-path
+crw-rw----+ 1 root video  226,   0 Aug 26 15:23 card0
+crw-rw----+ 1 root video  226,   1 Jan  8 08:23 card1
+crw-rw----+ 1 root render 226, 128 Jan  8 08:23 renderD128
+uid=1000(ubuntu) gid=1000(ubuntu) groups=1000(ubuntu),4(adm),20(dialout),24(cdrom),25(floppy),27(sudo),29(audio),30(dip),44(video),46(plugdev),110(render),119(netdev),120(lxd)
+ubuntu adm dialout cdrom floppy sudo audio dip video plugdev render netdev lxd
+[sudo] password for ubuntu:
+xlnx dev=fd4a0000.display master=fd4a0000.display unique=fd4a0000.display
+zocl dev=axi:zyxclmm_drm unique=axi:zyxclmm_drm
+System Configuration
+  OS Name              : Linux
+  Release              : 5.15.0-1060-xilinx-zynqmp
+  Version              : #64-Ubuntu SMP Fri Oct 24 02:34:51 UTC 2025
+  Machine              : aarch64
+  CPU Cores            : 4
+  Memory               : 3910 MB
+  Distribution         : Ubuntu 22.04.5 LTS
+  GLIBC                : 2.35
+  Model                : ZynqMP KR260 revB
+
+XRT
+  Version              : 2.13.0
+  Branch               :
+  Hash                 :
+  Hash Date            : 2022-09-15 17:01:20
+  ZOCL                 : 2.13.0,
+
+Devices present
+BDF             :  Shell  Platform UUID  Device ID     Device Ready*
+[0000:00:00.0]  :  KR260  0x0            user(inst=0)  Yes
+
+* Devices that are not ready will have reduced functionality when using XRT tools
+XILINX_XRT=/usr
+ubuntu@kria:~$
+
+ubuntu@kria:~$ dpkg -l | egrep 'xrt|zocl|xilinx' | sort
+modinfo zocl | egrep 'version|vermagic'
+ii  libdrm-xlnx-amdgpu1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to amdgpu-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-common                         2.4.110-1xilinx1                        all          Userspace interface to kernel DRM services -- common files
+ii  libdrm-xlnx-dev:arm64                      2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- development files
+ii  libdrm-xlnx-etnaviv1:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to etnaviv-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-freedreno1:arm64               2.4.110-1xilinx1                        arm64        Userspace interface to msm/kgsl kernel DRM services -- runtime
+ii  libdrm-xlnx-nouveau2:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to nouveau-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-radeon1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to radeon-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-tegra0:arm64                   2.4.110-1xilinx1                        arm64        Userspace interface to tegra-specific kernel DRM services -- runtime
+ii  libdrm2-xlnx:arm64                         2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- runtime
+ii  libxilinx-vcu-dev                          2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - development files
+ii  libxilinx-vcu-omx-dev                      2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - development files
+ii  libxilinx-vcu-omx1                         2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - runtime libraries
+ii  libxilinx-vcu0                             2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - runtime libraries
+ii  linux-firmware-xilinx-ap1302               1:2.0-0ubuntu1~22.04.1                  all          Firmware for the AP1302 ISP, for Xilinx boards
+ii  linux-firmware-xilinx-vcu                  2022.1-0ubuntu0xlnx1                    all          Xilinx VCU firmware files
+ii  linux-headers-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-5.15.0-1046-xilinx-zynqmp    5.15.0-1046.50                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-5.15.0-1060-xilinx-zynqmp    5.15.0-1060.64                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-xilinx-zynqmp                5.15.0.1060.63                          arm64        Linux kernel headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-image-5.15.0-1027-xilinx-zynqmp      5.15.0-1027.31                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-5.15.0-1046-xilinx-zynqmp      5.15.0-1046.50                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-5.15.0-1060-xilinx-zynqmp      5.15.0-1060.64                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-xilinx-zynqmp                  5.15.0.1060.63                          arm64        Linux kernel image for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-modules-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-modules-5.15.0-1046-xilinx-zynqmp    5.15.0-1046.50                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-modules-5.15.0-1060-xilinx-zynqmp    5.15.0-1060.64                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-xilinx-zynqmp                        5.15.0.1060.63                          arm64        Complete Linux kernel and headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-xilinx-zynqmp-headers-5.15.0-1027    5.15.0-1027.31                          all          Header files related to Linux kernel version 5.15.0
+ii  linux-xilinx-zynqmp-headers-5.15.0-1046    5.15.0-1046.50                          all          Header files related to Linux kernel version 5.15.0
+ii  linux-xilinx-zynqmp-headers-5.15.0-1060    5.15.0-1060.64                          all          Header files related to Linux kernel version 5.15.0
+ii  xilinx-vcu-ctrl                            2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - command-line utilities
+ii  xilinx-vcu-omx-utils                       2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - command-line utilities
+ii  xrt                                        2.13.479-0ubuntu2                       arm64        Xilinx Runtime (XRT) - runtime libraries
+rc  linux-image-5.15.0-1044-xilinx-zynqmp      5.15.0-1044.48                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+rc  linux-modules-5.15.0-1044-xilinx-zynqmp    5.15.0-1044.48                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+
+
+version:        2.13.479
+srcversion:     4971DA73FC4D315FA5B838E
+vermagic:       5.15.0-1060-xilinx-zynqmp SMP mod_unload modversions aarch64
+
+
+

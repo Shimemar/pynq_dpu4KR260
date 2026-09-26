@@ -1,0 +1,215 @@
+動かない環境２
+
+ubuntu@kria:~$ xbutil --verbose examine
+Verbose: Enabling Verbosity
+Verbose: SubCommand: examine
+System Configuration
+  OS Name              : Linux
+  Release              : 5.15.0-1062-xilinx-zynqmp
+  Version              : #66-Ubuntu SMP Fri Nov 28 22:35:13 UTC 2025
+  Machine              : aarch64
+  CPU Cores            : 4
+  Memory               : 3910 MB
+  Distribution         : Ubuntu 22.04.5 LTS
+  GLIBC                : 2.35
+  Model                : ZynqMP KR260 revB
+
+XRT
+  Version              : 2.13.0
+  Branch               :
+  Hash                 :
+  Hash Date            : 2022-09-15 17:01:20
+  ZOCL                 : 2.13.0,
+
+Devices present
+BDF             :  Shell  Platform UUID  Device ID     Device Ready*
+[0000:00:00.0]  :  KR260  0x0            user(inst=0)  Yes
+
+* Devices that are not ready will have reduced functionality when using XRT tools
+ubuntu@kria:~$
+
+
+ubuntu@kria:~$ env | egrep "XILINX|XLNX|VART|XRT|PATH|LD_LIBRARY_PATH"
+ls -l /usr/lib/dpu* /opt/xilinx/ /lib/firmware 2>/dev/null
+
+XILINX_XRT=/usr
+PATH=/usr/local/share/pynq-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/share/pynq-venv/bin/microblazeel-xilinx-elf/bin/
+-rw-r--r-- 1 root root 7835593 Jan 15 05:20 /usr/lib/dpu.xclbin
+-rw-r--r-- 1 root root 7837985 Jan 15 05:22 /usr/lib/dpu2.xclbin
+
+/lib/firmware:
+total 15688
+drwxr-xr-x 3 root root    4096 Mar  4  2024 5.15.0-1027-xilinx-zynqmp
+drwxr-xr-x 3 root root    4096 Jan 15 02:58 5.15.0-1062-xilinx-zynqmp
+-rwxr-xr-x 1 root root   41144 Oct  5  2021 al5d.fw
+-rwxr-xr-x 1 root root   13656 Oct  5  2021 al5d_b.fw
+-rwxr-xr-x 1 root root  140848 Oct  5  2021 al5e.fw
+-rwxr-xr-x 1 root root   17312 Oct  5  2021 al5e_b.fw
+-rwxr-xr-x 1 root root   73200 Jan 25  2024 ap1302_ar0144_single_fw.bin
+-rwxr-xr-x 1 root root   79324 Jan 25  2024 ap1302_ar1335_single_fw.bin
+-rw-r--r-- 1 root root 7797692 Jan 15 05:24 dpu.bin
+-rw-r--r-- 1 root root 7797692 Jan 15 05:22 dpu2.bin
+drwxr-xr-x 2 root root    4096 Mar 20  2023 hp
+-rw-r--r-- 1 root root     526 Jan 15 05:26 k26_starter_kits.dtbo
+-rw-r--r-- 1 root root    6248 Sep 16 15:20 regulatory.db
+-rw-r--r-- 1 root root    1085 Sep 16 15:20 regulatory.db.p7s
+-rw-r--r-- 1 root root   67152 Sep 15  2021 skl_hda_dsp_generic-tplg.bin
+drwxr-xr-x 3 root root    4096 Mar  4  2024 xilinx
+ubuntu@kria:~$
+
+ubuntu@kria:~$ modinfo zocl | egrep "version|srcversion|vermagic"
+version:        2.13.479
+srcversion:     4971DA73FC4D315FA5B838E
+vermagic:       5.15.0-1062-xilinx-zynqmp SMP mod_unload modversions aarch64
+ubuntu@kria:~$
+
+ubuntu@kria:~$  ldd $(which python3) 2>/dev/null | head
+        linux-vdso.so.1 (0x0000ffff8ad7c000)
+        libm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff8a6c0000)
+        libexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffff8a680000)
+        libz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffff8a650000)
+        libc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff8a4a0000)
+        /lib/ld-linux-aarch64.so.1 (0x0000ffff8ad43000)
+ubuntu@kria:~$
+
+ubuntu@kria:~$ ldd $(which xbutil) | egrep "libxrt|xrt_core|xilinx"
+        not a dynamic executable
+ubuntu@kria:~$
+
+ubuntu@kria:~$ pynq -v
+PYNQ version: 3.0.1
+Path: /usr/local/share/pynq-venv/lib/python3.10/site-packages/pynq
+Git Id: 16022d5f2c61c7e5e1d4aabcfc9b3e4c91b491b6
+ubuntu@kria:~$
+
+
+ubuntu@kria:~$  # 1) 実体の確認
+which python3
+which xrt xbutil
+xrt --version
+
+# 2) カーネル/ドライバ/起動条件
+uname -a
+cat /proc/cmdline
+lsmod | egrep "zocl|xocl"
+
+# 3) メモリ（CMA）
+grep -E "CmaTotal|CmaFree" /proc/meminfo
+
+# 4) 直近ログ
+dmesg | egrep -i "zocl|xrt|dma|timeout|cma|iommu|smmu" | tail -200
+
+# 5) 重要な環境変数
+env | egrep "XILINX|XLNX|VART|XRT|LD_LIBRARY_PATH|PATH"
+/usr/local/share/pynq-venv/bin/python3
+/usr/bin/xbutil
+Command 'xrt' not found, did you mean:
+  command 'art' from deb artemis (18.1.0+dfsg-6)
+  command 'rt' from deb rt4-clients (4.4.4+dfsg-2ubuntu1.22.04.1)
+  command 'rt' from deb rt5-clients (5.0.1+dfsg-1ubuntu1)
+  command 'srt' from deb python3-pysrt (1.0.1-2)
+  command 'prt' from deb prt (0.22-1)
+Try: sudo apt install <deb name>
+Linux kria 5.15.0-1062-xilinx-zynqmp #66-Ubuntu SMP Fri Nov 28 22:35:13 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+ root=LABEL=writable rootwait earlycon console=ttyPS1,115200 console=tty1 clk_ignore_unused uio_pdrv_genirq.of_id=generic-uio xilinx_tsn_ep.st_pcp=4 cma=1000M
+zocl                  204800  0
+CmaTotal:        1024000 kB
+CmaFree:         1008228 kB
+dmesg: read kernel buffer failed: Operation not permitted
+XILINX_XRT=/usr
+PATH=/usr/local/share/pynq-venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/usr/local/share/pynq-venv/bin/microblazeel-xilinx-elf/bin/
+ubuntu@kria:~$
+
+
+ubuntu@kria:~$ dpkg -l | egrep 'xrt|zocl|xilinx' | sort
+modinfo zocl | egrep 'version|vermagic'
+ii  libdrm-xlnx-amdgpu1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to amdgpu-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-common                         2.4.110-1xilinx1                        all          Userspace interface to kernel DRM services -- common files
+ii  libdrm-xlnx-dev:arm64                      2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- development files
+ii  libdrm-xlnx-etnaviv1:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to etnaviv-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-freedreno1:arm64               2.4.110-1xilinx1                        arm64        Userspace interface to msm/kgsl kernel DRM services -- runtime
+ii  libdrm-xlnx-nouveau2:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to nouveau-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-radeon1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to radeon-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-tegra0:arm64                   2.4.110-1xilinx1                        arm64        Userspace interface to tegra-specific kernel DRM services -- runtime
+ii  libdrm2-xlnx:arm64                         2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- runtime
+ii  libxilinx-vcu-dev                          2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - development files
+ii  libxilinx-vcu-omx-dev                      2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - development files
+ii  libxilinx-vcu-omx1                         2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - runtime libraries
+ii  libxilinx-vcu0                             2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - runtime libraries
+ii  linux-firmware-xilinx-ap1302               1:2.0-0ubuntu1~22.04.1                  all          Firmware for the AP1302 ISP, for Xilinx boards
+ii  linux-firmware-xilinx-vcu                  2022.1-0ubuntu0xlnx1                    all          Xilinx VCU firmware files
+ii  linux-headers-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-5.15.0-1062-xilinx-zynqmp    5.15.0-1062.66                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-xilinx-zynqmp                5.15.0.1062.65                          arm64        Linux kernel headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-image-5.15.0-1027-xilinx-zynqmp      5.15.0-1027.31                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-5.15.0-1062-xilinx-zynqmp      5.15.0-1062.66                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-xilinx-zynqmp                  5.15.0.1062.65                          arm64        Linux kernel image for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-modules-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-modules-5.15.0-1062-xilinx-zynqmp    5.15.0-1062.66                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-xilinx-zynqmp                        5.15.0.1062.65                          arm64        Complete Linux kernel and headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-xilinx-zynqmp-headers-5.15.0-1027    5.15.0-1027.31                          all          Header files related to Linux kernel version 5.15.0
+ii  linux-xilinx-zynqmp-headers-5.15.0-1062    5.15.0-1062.66                          all          Header files related to Linux kernel version 5.15.0
+ii  xilinx-vcu-ctrl                            2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - command-line utilities
+ii  xilinx-vcu-omx-utils                       2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - command-line utilities
+ii  xrt                                        2.13.479-0ubuntu2                       arm64        Xilinx Runtime (XRT) - runtime libraries
+
+
+version:        2.13.479
+srcversion:     4971DA73FC4D315FA5B838E
+vermagic:       5.15.0-1062-xilinx-zynqmp SMP mod_unload modversions aarch64
+
+
+
+
+ubuntu@kria:~$ uname -a
+python3 -c "import pynq; print('pynq',pynq.__version__)"
+pip show pynq-dpu | sed -n '1,60p'
+pip show vart 2>/dev/null | sed -n '1,60p'
+dpkg -l | egrep 'xrt|zocl|xilinx|vitis|vart' | sort
+modinfo zocl | egrep 'version|vermagic'
+Linux kria 5.15.0-1062-xilinx-zynqmp #66-Ubuntu SMP Fri Nov 28 22:35:13 UTC 2025 aarch64 aarch64 aarch64 GNU/Linux
+pynq 3.0.1
+Name: pynq-dpu
+Version: 2.5
+Summary: PYNQ DPU Overlay using Vitis AI
+Home-page: https://github.com/Xilinx/DPU-PYNQ.git
+Author: Xilinx PYNQ Development Team
+Author-email:
+License: Apache License 2.0
+Location: /usr/local/share/pynq-venv/lib/python3.10/site-packages
+Requires: CppHeaderParser, mnist, pybind11, pynq
+Required-by:
+ii  libdrm-xlnx-amdgpu1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to amdgpu-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-common                         2.4.110-1xilinx1                        all          Userspace interface to kernel DRM services -- common files
+ii  libdrm-xlnx-dev:arm64                      2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- development files
+ii  libdrm-xlnx-etnaviv1:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to etnaviv-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-freedreno1:arm64               2.4.110-1xilinx1                        arm64        Userspace interface to msm/kgsl kernel DRM services -- runtime
+ii  libdrm-xlnx-nouveau2:arm64                 2.4.110-1xilinx1                        arm64        Userspace interface to nouveau-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-radeon1:arm64                  2.4.110-1xilinx1                        arm64        Userspace interface to radeon-specific kernel DRM services -- runtime
+ii  libdrm-xlnx-tegra0:arm64                   2.4.110-1xilinx1                        arm64        Userspace interface to tegra-specific kernel DRM services -- runtime
+ii  libdrm2-xlnx:arm64                         2.4.110-1xilinx1                        arm64        Userspace interface to kernel DRM services -- runtime
+ii  libvart                                    2.5.0                                   arm64        Vitis Ai RuntTime
+ii  libxilinx-vcu-dev                          2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - development files
+ii  libxilinx-vcu-omx-dev                      2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - development files
+ii  libxilinx-vcu-omx1                         2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - runtime libraries
+ii  libxilinx-vcu0                             2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - runtime libraries
+ii  linux-firmware-xilinx-ap1302               1:2.0-0ubuntu1~22.04.1                  all          Firmware for the AP1302 ISP, for Xilinx boards
+ii  linux-firmware-xilinx-vcu                  2022.1-0ubuntu0xlnx1                    all          Xilinx VCU firmware files
+ii  linux-headers-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-5.15.0-1062-xilinx-zynqmp    5.15.0-1062.66                          arm64        Linux kernel headers for version 5.15.0 on ARMv8 SMP
+ii  linux-headers-xilinx-zynqmp                5.15.0.1062.65                          arm64        Linux kernel headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-image-5.15.0-1027-xilinx-zynqmp      5.15.0-1027.31                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-5.15.0-1062-xilinx-zynqmp      5.15.0-1062.66                          arm64        Linux kernel image for version 5.15.0 on ARMv8 SMP
+ii  linux-image-xilinx-zynqmp                  5.15.0.1062.65                          arm64        Linux kernel image for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-modules-5.15.0-1027-xilinx-zynqmp    5.15.0-1027.31                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-modules-5.15.0-1062-xilinx-zynqmp    5.15.0-1062.66                          arm64        Linux kernel extra modules for version 5.15.0 on ARMv8 SMP
+ii  linux-xilinx-zynqmp                        5.15.0.1062.65                          arm64        Complete Linux kernel and headers for Xilinx ZYNQ Ultrascale+ systems.
+ii  linux-xilinx-zynqmp-headers-5.15.0-1027    5.15.0-1027.31                          all          Header files related to Linux kernel version 5.15.0
+ii  linux-xilinx-zynqmp-headers-5.15.0-1062    5.15.0-1062.66                          all          Header files related to Linux kernel version 5.15.0
+ii  xilinx-vcu-ctrl                            2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU Ctrl Software - command-line utilities
+ii  xilinx-vcu-omx-utils                       2022.1-0ubuntu0xlnx1                    arm64        Xilinx VCU OpenMax Integration Layer - command-line utilities
+ii  xrt                                        2.13.479-0ubuntu2                       arm64        Xilinx Runtime (XRT) - runtime libraries
+version:        2.13.479
+srcversion:     4971DA73FC4D315FA5B838E
+vermagic:       5.15.0-1062-xilinx-zynqmp SMP mod_unload modversions aarch64
+ubuntu@kria:~$

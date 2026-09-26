@@ -1,0 +1,275 @@
+UUIDによるプログラムの追跡
+
+
+コマンド：
+
+1.ノートブックの実行を行う前に１度実行
+sudo dmesg -c >/dev/null
+
+2.実行後（正常動作後 or 停止後）
+sudo dmesg -T | egrep -i "fpga_manager|zocl_xclbin_read_axlf|bitstream|The XCLBIN already loaded" | tail -n 200
+
+
+
+新環境、サンプル(dpu.bin)　UUID:08e01005-a296-7ca9-9dcf-551f9c5fde2b　正常動作
+ubuntu@kria:~$ sudo dmesg -T | egrep -i "fpga_manager|zocl|drm|kds|ert|cu_|mem|cma|interrupt|poll" | tail -n 250
+[Thu Jan 15 07:21:06 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:06 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:06 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:13 2026] fpga_manager fpga0: writing dpu.bin to Xilinx ZynqMP FPGA Manager
+[Thu Jan 15 07:21:13 2026] [drm] skip kind 29(AIE_RESOURCES) return code: -22
+[Thu Jan 15 07:21:13 2026] [drm] found kind 8(IP_LAYOUT)
+[Thu Jan 15 07:21:13 2026] [drm] skip kind 9(DEBUG_IP_LAYOUT) return code: -22
+[Thu Jan 15 07:21:13 2026] [drm] skip kind 25(AIE_METADATA) return code: -22
+[Thu Jan 15 07:21:13 2026] [drm] found kind 7(CONNECTIVITY)
+[Thu Jan 15 07:21:13 2026] [drm] found kind 6(MEM_TOPOLOGY)
+[Thu Jan 15 07:21:13 2026] [drm] Memory 0 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:21:13 2026] [drm] Memory 1 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:21:13 2026] [drm] Memory 2 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:21:13 2026] [drm] Memory 3 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:21:13 2026] [drm] Memory 4 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:21:13 2026] [drm] Memory 5 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:21:13 2026] [drm] Failed to initial CU interrupt. Fall back to polling
+[Thu Jan 15 07:21:13 2026] cu_drv CU.3.auto: cu_probe: CU[0] created
+[Thu Jan 15 07:21:13 2026] cu_drv CU.3.auto:  ffff000809a46c10 kds_cfg_update: CU(0) doesnt support interrupt, running polling thread for all cus
+[Thu Jan 15 07:21:13 2026] [drm] zocl_xclbin_read_axlf 08e01005-a296-7ca9-9dcf-551f9c5fde2b ret: 0
+[Thu Jan 15 07:21:13 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+[Thu Jan 15 07:21:13 2026] zocl-drm axi:zyxclmm_drm:  ffff0008100bcc10 kds_add_context: Client pid(2177) add context Domain(0) CU(0xffffffff) shared(true)
+[Thu Jan 15 07:21:13 2026] zocl-drm axi:zyxclmm_drm:  ffff0008100bcc10 kds_del_context: Client pid(2177) del context Domain(0) CU(0xffffffff)
+[Thu Jan 15 07:21:13 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b unlocked, ref=0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] [drm] skip kind 29(AIE_RESOURCES) return code: -22
+[Thu Jan 15 07:21:45 2026] [drm] zocl_xclbin_read_axlf The XCLBIN already loaded
+[Thu Jan 15 07:21:45 2026] [drm] zocl_xclbin_read_axlf 08e01005-a296-7ca9-9dcf-551f9c5fde2b ret: 0
+[Thu Jan 15 07:21:45 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm:  ffff0008100bcc10 kds_add_context: Client pid(2177) add context Domain(0) CU(0xffffffff) shared(true)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm:  ffff0008100bcc10 kds_del_context: Client pid(2177) del context Domain(0) CU(0xffffffff)
+[Thu Jan 15 07:21:45 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b unlocked, ref=0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm:  ffff0008100bcc10 kds_add_context: Client pid(2177) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2177)
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2177), ret: 0
+[Thu Jan 15 07:21:45 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=2
+[Thu Jan 15 07:21:45 2026] zocl-drm axi:zyxclmm_drm:  ffff0008100bcc10 kds_add_context: Client pid(2177) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 07:22:04 2026] [drm] ERT_EXEC_WRITE is obsoleted, use ERT_START_KEY_VAL
+
+
+
+新環境の動作ログ（dpu2.bin)　UUID:12d3e82c-1ef4-4f55-ffe6-07d9edb6d977　動作異常
+ubuntu@kria:~$ sudo dmesg -T | egrep -i "fpga_manager|zocl|drm|kds|ert|cu_|mem|cma|interrupt|poll" | tail -n 250
+[Thu Jan 15 08:09:12 2026] [drm] bitstream 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 unlocked, ref=0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] [drm] skip kind 29(AIE_RESOURCES) return code: -22
+[Thu Jan 15 08:10:13 2026] [drm] found kind 8(IP_LAYOUT)
+[Thu Jan 15 08:10:13 2026] [drm] skip kind 9(DEBUG_IP_LAYOUT) return code: -22
+[Thu Jan 15 08:10:13 2026] [drm] skip kind 25(AIE_METADATA) return code: -22
+[Thu Jan 15 08:10:13 2026] [drm] found kind 7(CONNECTIVITY)
+[Thu Jan 15 08:10:13 2026] [drm] found kind 6(MEM_TOPOLOGY)
+[Thu Jan 15 08:10:13 2026] [drm] Memory 0 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 08:10:13 2026] [drm] Memory 1 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 08:10:13 2026] [drm] Memory 2 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 08:10:13 2026] [drm] Memory 3 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 08:10:13 2026] [drm] Memory 4 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 08:10:13 2026] [drm] Memory 5 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 08:10:13 2026] cu_drv CU.3.auto: cu_remove: CU[0] removed
+[Thu Jan 15 08:10:13 2026] [drm] Failed to initial CU interrupt. Fall back to polling
+[Thu Jan 15 08:10:13 2026] cu_drv CU.3.auto: cu_probe: CU[0] created
+[Thu Jan 15 08:10:13 2026] cu_drv CU.3.auto:  ffff000803a07010 kds_cfg_update: CU(0) doesnt support interrupt, running polling thread for all cus
+[Thu Jan 15 08:10:13 2026] [drm] zocl_xclbin_read_axlf 08e01005-a296-7ca9-9dcf-551f9c5fde2b ret: 0
+[Thu Jan 15 08:10:13 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_add_context: Client pid(2201) add context Domain(0) CU(0xffffffff) shared(true)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_context: Client pid(2201) del context Domain(0) CU(0xffffffff)
+[Thu Jan 15 08:10:13 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b unlocked, ref=0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_add_context: Client pid(2201) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2201), ret: 0
+[Thu Jan 15 08:10:13 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=2
+[Thu Jan 15 08:10:13 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_add_context: Client pid(2201) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 08:10:30 2026] [drm] ERT_EXEC_WRITE is obsoleted, use ERT_START_KEY_VAL
+[Thu Jan 15 08:10:41 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 _kds_fini_client: Client pid(2201) has 1 opening context for 0 slot
+[Thu Jan 15 08:10:41 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:42 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:42 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:43 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:43 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:44 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:44 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:45 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:45 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: 1 outstanding command(s) on CU(0)
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_cu_context: CU(0) hangs, please reset device
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_context: Client pid(2201) del context Domain(0) CU(0x0)
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 _kds_fini_client: Removing CU Domain[0] CU Index [0]
+[Thu Jan 15 08:10:46 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b unlocked, ref=1
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 _kds_fini_client: Client pid(2201) has 1 opening context for 0 slot
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 kds_del_context: Client pid(2201) del context Domain(0) CU(0x0)
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm:  ffff000803ac6410 _kds_fini_client: Removing CU Domain[0] CU Index [0]
+[Thu Jan 15 08:10:46 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b unlocked, ref=0
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+[Thu Jan 15 08:10:46 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2201)
+
+
+
+
+旧環境の動作ログ（dpu2.bin)　UUID:12d3e82c-1ef4-4f55-ffe6-07d9edb6d977　正常動作
+ubuntu@kria:~$ sudo dmesg -T | egrep -i "fpga_manager|zocl|drm|kds|ert|cu_|mem|cma|interrupt|poll" | tail -n 250
+[Thu Jan 15 07:38:33 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:38:33 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:38:33 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:38:44 2026] fpga_manager fpga0: writing dpu2.bin to Xilinx ZynqMP FPGA Manager
+[Thu Jan 15 07:38:44 2026] [drm] skip kind 29(AIE_RESOURCES) return code: -22
+[Thu Jan 15 07:38:44 2026] [drm] found kind 8(IP_LAYOUT)
+[Thu Jan 15 07:38:44 2026] [drm] skip kind 9(DEBUG_IP_LAYOUT) return code: -22
+[Thu Jan 15 07:38:44 2026] [drm] skip kind 25(AIE_METADATA) return code: -22
+[Thu Jan 15 07:38:44 2026] [drm] found kind 7(CONNECTIVITY)
+[Thu Jan 15 07:38:44 2026] [drm] found kind 6(MEM_TOPOLOGY)
+[Thu Jan 15 07:38:44 2026] [drm] Memory 0 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:38:44 2026] [drm] Memory 1 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:38:44 2026] [drm] Memory 2 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:38:44 2026] [drm] Memory 3 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:38:44 2026] [drm] Memory 4 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:38:44 2026] [drm] Memory 5 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:38:44 2026] [drm] Failed to initial CU interrupt. Fall back to polling
+[Thu Jan 15 07:38:44 2026] cu_drv CU.3.auto: cu_probe: CU[0] created
+[Thu Jan 15 07:38:44 2026] cu_drv CU.3.auto:  ffff00080bbf2010 kds_cfg_update: CU(0) doesnt support interrupt, running polling thread for all cus
+[Thu Jan 15 07:38:44 2026] [drm] zocl_xclbin_read_axlf 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 ret: 0
+[Thu Jan 15 07:38:45 2026] [drm] bitstream 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 locked, ref=1
+[Thu Jan 15 07:38:45 2026] zocl-drm axi:zyxclmm_drm:  ffff0008102b8810 kds_add_context: Client pid(2419) add context Domain(0) CU(0xffffffff) shared(true)
+[Thu Jan 15 07:38:45 2026] zocl-drm axi:zyxclmm_drm:  ffff0008102b8810 kds_del_context: Client pid(2419) del context Domain(0) CU(0xffffffff)
+[Thu Jan 15 07:38:45 2026] [drm] bitstream 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 unlocked, ref=0
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:04 2026] [drm] skip kind 29(AIE_RESOURCES) return code: -22
+[Thu Jan 15 07:40:04 2026] [drm] zocl_xclbin_read_axlf The XCLBIN already loaded
+[Thu Jan 15 07:40:04 2026] [drm] zocl_xclbin_read_axlf 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 ret: 0
+[Thu Jan 15 07:40:05 2026] [drm] bitstream 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 locked, ref=1
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm:  ffff0008102b8810 kds_add_context: Client pid(2419) add context Domain(0) CU(0xffffffff) shared(true)
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm:  ffff0008102b8810 kds_del_context: Client pid(2419) del context Domain(0) CU(0xffffffff)
+[Thu Jan 15 07:40:05 2026] [drm] bitstream 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 unlocked, ref=0
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:05 2026] [drm] bitstream 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 locked, ref=1
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm:  ffff0008102b8810 kds_add_context: Client pid(2419) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(2419)
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(2419), ret: 0
+[Thu Jan 15 07:40:05 2026] [drm] bitstream 12d3e82c-1ef4-4f55-ffe6-07d9edb6d977 locked, ref=2
+[Thu Jan 15 07:40:05 2026] zocl-drm axi:zyxclmm_drm:  ffff0008102b8810 kds_add_context: Client pid(2419) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 07:40:05 2026] [drm] Allocating BO from CMA for invalid or unused memory index[0]
+[Thu Jan 15 07:40:05 2026] [drm] Allocating BO from CMA for invalid or unused memory index[0]
+[Thu Jan 15 07:40:05 2026] [drm] Allocating BO from CMA for invalid or unused memory index[0]
+[Thu Jan 15 07:40:05 2026] [drm] Allocating BO from CMA for invalid or unused memory index[0]
+[Thu Jan 15 07:40:05 2026] [drm] Allocating BO from CMA for invalid or unused memory index[0]
+[Thu Jan 15 07:40:21 2026] [drm] ERT_EXEC_WRITE is obsoleted, use ERT_START_KEY_VAL
+ubuntu@kria:~$
+
+
+旧環境の動作ログ（dpu.bin)　UUID:08e01005-a296-7ca9-9dcf-551f9c5fde2b　正常動作
+ubuntu@kria:~$ sudo dmesg -T | egrep -i "fpga_manager|zocl|drm|kds|ert|cu_|mem|cma|interrupt|poll" | tail -n 250
+[Thu Jan 15 07:56:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:04 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:04 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:14 2026] fpga_manager fpga0: writing dpu.bin to Xilinx ZynqMP FPGA Manager
+[Thu Jan 15 07:56:14 2026] [drm] skip kind 29(AIE_RESOURCES) return code: -22
+[Thu Jan 15 07:56:14 2026] [drm] found kind 8(IP_LAYOUT)
+[Thu Jan 15 07:56:14 2026] [drm] skip kind 9(DEBUG_IP_LAYOUT) return code: -22
+[Thu Jan 15 07:56:14 2026] [drm] skip kind 25(AIE_METADATA) return code: -22
+[Thu Jan 15 07:56:14 2026] [drm] found kind 7(CONNECTIVITY)
+[Thu Jan 15 07:56:14 2026] [drm] found kind 6(MEM_TOPOLOGY)
+[Thu Jan 15 07:56:14 2026] [drm] Memory 0 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:56:14 2026] [drm] Memory 1 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:56:14 2026] [drm] Memory 2 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:56:14 2026] [drm] Memory 3 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:56:14 2026] [drm] Memory 4 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:56:14 2026] [drm] Memory 5 is not reserved in device tree. Will allocate memory from CMA
+[Thu Jan 15 07:56:14 2026] [drm] Failed to initial CU interrupt. Fall back to polling
+[Thu Jan 15 07:56:14 2026] cu_drv CU.3.auto: cu_probe: CU[0] created
+[Thu Jan 15 07:56:14 2026] cu_drv CU.3.auto:  ffff00080bc5e410 kds_cfg_update: CU(0) doesnt support interrupt, running polling thread for all cus
+[Thu Jan 15 07:56:14 2026] [drm] zocl_xclbin_read_axlf 08e01005-a296-7ca9-9dcf-551f9c5fde2b ret: 0
+[Thu Jan 15 07:56:14 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+
+[Thu Jan 15 07:56:14 2026] zocl-drm axi:zyxclmm_drm:  ffff000806a00810 kds_add_context: Client pid(4037) add context Domain(0) CU(0xffffffff) shared(true)
+[Thu Jan 15 07:56:14 2026] zocl-drm axi:zyxclmm_drm:  ffff000806a00810 kds_del_context: Client pid(4037) del context Domain(0) CU(0xffffffff)
+[Thu Jan 15 07:56:14 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b unlocked, ref=0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] [drm] skip kind 29(AIE_RESOURCES) return code: -22
+[Thu Jan 15 07:56:31 2026] [drm] zocl_xclbin_read_axlf The XCLBIN already loaded
+[Thu Jan 15 07:56:31 2026] [drm] zocl_xclbin_read_axlf 08e01005-a296-7ca9-9dcf-551f9c5fde2b ret: 0
+[Thu Jan 15 07:56:31 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm:  ffff000806a00810 kds_add_context: Client pid(4037) add context Domain(0) CU(0xffffffff) shared(true)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm:  ffff000806a00810 kds_del_context: Client pid(4037) del context Domain(0) CU(0xffffffff)
+[Thu Jan 15 07:56:31 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b unlocked, ref=0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=1
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm:  ffff000806a00810 kds_add_context: Client pid(4037) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_destroy_client: client exits pid(4037)
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm: zocl_create_client: created KDS client for pid(4037), ret: 0
+[Thu Jan 15 07:56:31 2026] [drm] bitstream 08e01005-a296-7ca9-9dcf-551f9c5fde2b locked, ref=2
+[Thu Jan 15 07:56:31 2026] zocl-drm axi:zyxclmm_drm:  ffff000806a00810 kds_add_context: Client pid(4037) add context Domain(0) CU(0x0) shared(true)
+[Thu Jan 15 07:56:45 2026] [drm] ERT_EXEC_WRITE is obsoleted, use ERT_START_KEY_VAL
+ubuntu@kria:~$

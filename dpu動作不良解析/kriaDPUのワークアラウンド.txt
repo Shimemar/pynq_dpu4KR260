@@ -1,0 +1,58 @@
+kriaDPUのワークアラウンド
+
+
+・案１　ファイルの差し替え
+
+下記のディレクトリーに今回使用するxclbinファイル（オーバーレイモジュール）があります。
+場所は/usr/lib  対象ファイルはrootで作成されているので、コマンドは全てsudo経由になります。
+ubuntu@kria:/usr/lib$ ls -l *.xclbin
+-rw-r--r-- 1 root root 7835593 Jan 15 07:21 dpu.xclbin
+-rw-r--r-- 1 root root 7837985 Jan 15 08:09 dpu2.xclbin
+
+今後の事も考え、現在のdpu.xclbinのバックアップを取ります。
+ubuntu@kria:/usr/lib$ sudo cp dpu.xclbin dpu.xclbin.bk
+
+バックアップが出来ていいる事の確認
+ubuntu@kria:/usr/lib$ ls -l *.xclbin*
+-rw-r--r-- 1 root root 7835593 Jan 15 07:21 dpu.xclbin
+-rw-r--r-- 1 root root 7835593 Jan 15 09:12 dpu.xclbin.bk　　　<----backup file
+-rw-r--r-- 1 root root 7837985 Jan 15 08:09 dpu2.xclbin
+
+dpu2.xclbinをdpu.xclbinにコピー（もしくはrenameします）
+ubuntu@kria:/usr/lib$ sudo cp dpu2.xclbin dpu.xclbin
+
+dpu.xclbinとdpu2.xclbinのサイズが同じで有ることを確認します。
+ubuntu@kria:/usr/lib$ ls -l *.xclbin*
+-rw-r--r-- 1 root root 7837985 Jan 15 09:13 dpu.xclbin
+-rw-r--r-- 1 root root 7835593 Jan 15 09:12 dpu.xclbin.bk
+-rw-r--r-- 1 root root 7837985 Jan 15 08:09 dpu2.xclbin
+
+
+この作業が終了した後、JupiterNotebookでdpu2.binを使用したプログラムが正常に動作する様になります。
+
+前回環境を作った時、初めは”dpu.bin”でプロジェクトを作成していました。そこで自分で作ったDPU環境が動くことを確認した後にGPIOだけを
+追加して、dpu2を作成していました。dpu2のDPUのパラメーターを変更しなかった事から、dpuとdpu2のオーバーレイモジュールが一致していた為
+動いていたと考えられます。
+
+
+案２　JupiterNotebookで上での変更
+ノートブック上の下記のコードと。フォルダー(./mydpu)内のファイル名変更
+
+変更前：overlay = DpuOverlay("./mydpu/dpu2.bit")
+      ↓ 
+変更後：overlay = DpuOverlay("./mydpu/dpu.bit")
+
+mydpuフォルダー内のファイル名を変更する
+変更前：dpu2.bit , dpu2.xclbin , dpu2.hwh 
+      ↓ 
+変更後：dpu.bit , dpu.xclbin , dpu.hwh 
+
+
+
+
+※上記とは別に１点、ファイルの存在を確認してください。
+
+　pynq-dpuの中にある./imgフォルダー内に”coco2017_classes.txt”があるか？確認してください。
+
+
+
